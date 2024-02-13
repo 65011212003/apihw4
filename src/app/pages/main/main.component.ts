@@ -10,7 +10,8 @@ export class MainComponent implements OnInit {
   movies: any[] = [];
   searchQuery: string = '';
   currentPage: number = 1;
-
+  pageSize: number = 10; // Set the desired number of movies per page
+  totalResults: number = 0;
 
   constructor(private http: HttpClient) { }
 
@@ -29,33 +30,30 @@ export class MainComponent implements OnInit {
       'The Lord of the Rings: The Fellowship of the Ring'
     ];
 
-    // Randomly select 10 movie titles
-    const randomMovieTitles = this.getRandomElements(movieTitles, 10);
-
     // Fetch movies for the selected titles
-    randomMovieTitles.forEach((title) => {
+    movieTitles.forEach((title) => {
       this.fetchMoviesByTitle(title);
-      // this.searchMovie('Inception');
     });
   }
 
   search() {
     if (this.searchQuery.trim() !== '') {
+      this.currentPage = 1; // Reset to the first page when performing a new search
       this.searchMoviesByTitle(this.searchQuery);
     }
   }
 
   searchMoviesByTitle(query: string) {
     const apiKey = '9e75d7ed';
-    const apiUrl = `https://www.omdbapi.com/?t=${query}&page=${this.currentPage}&apikey=${apiKey}`;
+    const apiUrl = `https://www.omdbapi.com/?s=${query}&page=${this.currentPage}&apikey=${apiKey}`;
 
     // Make the API call
     this.http.get(apiUrl).subscribe(
       (data: any) => {
         if (data.Response === 'True') {
           // Handle the response here
-          // If it's the first page, update 'movies' array; otherwise, append to it
-          this.movies = this.currentPage === 1 ? data.Search : [...this.movies, ...data.Search];
+          this.movies = data.Search;
+          this.totalResults = parseInt(data.totalResults, 10);
         } else {
           console.error('Unexpected API response:', data.Error);
         }
@@ -86,54 +84,15 @@ export class MainComponent implements OnInit {
     );
   }
 
-  getRandomElements(arr: any[], n: number) {
-    const result = new Array(n);
-    let len = arr.length;
-    const taken = new Array(len);
-    if (n > len)
-      throw new RangeError("getRandomElements: more elements taken than available");
-
-    while (n--) {
-      const x = Math.floor(Math.random() * len);
-      result[n] = arr[x in taken ? taken[x] : x];
-      taken[x] = --len in taken ? taken[len] : len;
-    }
-
-    return result;
-  }
-
-  loadNextPage() {
+  loadPage(page: number) {
     if (this.searchQuery.trim() !== '') {
-      this.currentPage++;
+      this.currentPage = page;
       this.searchMoviesByTitle(this.searchQuery);
     }
   }
 
-
-  searchMovie(query: string) {
-    const apiKey = '9e75d7ed';
-    const apiUrl = `https://www.omdbapi.com/?${this.isImdbId(query) ? 'i' : 't'}=${query}&apikey=${apiKey}`;
-
-    // Make the API call
-    this.http.get(apiUrl).subscribe(
-      (data: any) => {
-        if (data.Response === 'True') {
-          // Handle the response here, push the movie data into your 'movies' array
-          this.movies = [data];
-        } else {
-          console.error('Unexpected API response:', data.Error);
-        }
-      },
-      (error) => {
-        console.error('API Error:', error);
-      }
-    );
+  getPages(): number[] {
+    const totalPages = Math.ceil(this.totalResults / this.pageSize);
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
   }
-
-  isImdbId(query: string): boolean {
-    // IMDb IDs start with 'tt'
-    return /^tt\d+$/.test(query);
-  }
-
-
 }

@@ -1,0 +1,63 @@
+<!-- header.component.html -->
+
+<header class="bg-gray-800 p-4">
+    <nav class="flex items-center justify-between">
+        <div class="text-white">
+            <h1 class="text-xl font-bold">OMDbAPI</h1>
+        </div>
+        <ul class="flex space-x-4">
+            <li><a (click)="goBack()" class="cursor-pointer text-gray-300">Back</a></li>
+            <!-- Add more navigation links as needed -->
+        </ul>
+    </nav>
+</header>
+
+
+<div *ngIf="movie" class="bg-gray-800 p-6 border rounded shadow-md text-white">
+    <h2 class="text-3xl font-bold mb-4">{{ movie.Title }}</h2>
+    <img src="{{ movie.Poster }}" alt="{{ movie.Title }} Poster" class="mb-6 rounded-lg">
+
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <p class="text-gray-400">Released: {{ movie.Released }}</p>
+            <p class="text-gray-400">Runtime: {{ movie.Runtime }}</p>
+            <p class="text-gray-400">Genre: {{ movie.Genre }}</p>
+            <p class="text-gray-400">Director: {{ movie.Director }}</p>
+            <p class="text-gray-400">Writer: {{ movie.Writer }}</p>
+        </div>
+        <div>
+            <p class="text-gray-400">Actors: {{ movie.Actors }}</p>
+            <p class="text-gray-400">Language: {{ movie.Language }}</p>
+            <p class="text-gray-400">Country: {{ movie.Country }}</p>
+            <p class="text-gray-400">Awards: {{ movie.Awards }}</p>
+        </div>
+    </div>
+
+    <h3 class="text-xl font-semibold mt-6">Ratings:</h3>
+    <ul class="list-disc ml-8">
+        <li *ngFor="let rating of movie.Ratings" class="text-gray-400">{{ rating.Source }}: {{ rating.Value }}</li>
+    </ul>
+
+    <div class="grid grid-cols-2 gap-4 mt-6">
+        <div>
+            <p class="text-gray-400">Metascore: {{ movie.Metascore }}</p>
+            <p class="text-gray-400">IMDb Rating: {{ movie.imdbRating }}</p>
+            <p class="text-gray-400">IMDb Votes: {{ movie.imdbVotes }}</p>
+        </div>
+        <div>
+            <p class="text-gray-400">IMDb ID: {{ movie.imdbID }}</p>
+            <p class="text-gray-400">Type: {{ movie.Type }}</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mt-6">
+        <div>
+            <p class="text-gray-400">DVD: {{ movie.DVD }}</p>
+            <p class="text-gray-400">Box Office: {{ movie.BoxOffice }}</p>
+        </div>
+        <div>
+            <p class="text-gray-400">Production: {{ movie.Production }}</p>
+            <p class="text-gray-400">Website: {{ movie.Website }}</p>
+        </div>
+    </div>
+</div>
