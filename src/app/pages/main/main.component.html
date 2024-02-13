@@ -1,0 +1,28 @@
+<div>
+    <!-- Header Section -->
+    <header class="bg-gray-800 p-4">
+        <h1 class="text-white text-3xl font-bold">Movie Search</h1>
+        <div class="mt-2">
+            <!-- Search Box -->
+            <input type="text" [(ngModel)]="searchQuery" placeholder="Enter movie name or IMDb ID"
+                class="p-2 border rounded" />
+            <button (click)="search()" class="ml-2 p-2 bg-blue-500 text-white rounded">Search</button>
+        </div>
+    </header>
+
+    <!-- Movie Grid Section -->
+    <div class="grid grid-cols-3 gap-6 bg-gray-900 p-8">
+        <div *ngFor="let movie of movies" class="bg-gray-800 p-6 border rounded shadow-md text-white">
+            <h2 class="text-2xl font-bold mb-2">{{ movie.Title }}</h2>
+            <img src="{{ movie.Poster }}" alt="{{ movie.Title }} Poster" class="mb-4 rounded-lg">
+            <p class="text-gray-400">{{ movie.Year }}</p>
+            <p class="mt-2">Rated: {{ movie.Rated }}</p>
+            <!-- Add more properties as needed -->
+        </div>
+    </div>
+
+    <!-- Pagination Button -->
+    <div class="mt-4">
+        <button (click)="loadNextPage()" class="p-2 bg-blue-500 text-white rounded">Load Next Page</button>
+    </div>
+</div>
